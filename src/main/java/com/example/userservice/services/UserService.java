@@ -17,7 +17,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class UserService {
+public class UserService implements UserServices {
+
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserRepo userRepository;
     private final TokenRepo tokenRepository;
@@ -28,6 +29,7 @@ public class UserService {
         this.tokenRepository = tokenRepository;
     }
 
+    @Override
     public User signUp(String name, String email, String password) {
         User u = new User();
         u.setEmail(email);
@@ -36,26 +38,7 @@ public class UserService {
         return userRepository.save(u);
     }
 
-//    public Token login(String email, String password) {
-//        Optional<User> userOptional = userRepository.findByEmail(email);
-//        if (userOptional.isEmpty()) {
-//            return null;
-//        }
-//
-//        User user = userOptional.get();
-//        if (bCryptPasswordEncoder.matches(password, user.getHashedPassword())) {
-//            Token token = new Token();
-//            token.setUser(user);
-//            token.setValue(RandomStringUtils.randomAlphabetic(128));
-//            LocalDate today = LocalDate.now();
-//            LocalDate oneDayLater = today.plusDays(1);
-//            Date expiryAt = Date.from(oneDayLater.atStartOfDay(ZoneId.systemDefault()).toInstant());
-//            token.setExpiryAt(expiryAt);
-//            return tokenRepository.save(token);
-//        }
-//        return null;
-//    }
-
+    @Override
     public Token login(String email, String password) {
         Optional<User> userOptional = userRepository.findByEmail(email);
         if (userOptional.isEmpty()) {
@@ -66,40 +49,27 @@ public class UserService {
         if (bCryptPasswordEncoder.matches(password, user.getHashedPassword())) {
             Token token = new Token();
             token.setUser(user);
-
-            token.setValue(UUID.randomUUID().toString());
-            LocalDateTime expiryTime = LocalDateTime.now().plusDays(1);
-            Instant instant = expiryTime.atZone(ZoneId.systemDefault()).toInstant();
-            token.setExpiryAt(Date.from(instant));
-            //token.setValue(RandomStringUtils.randomAlphabetic(128));
-//            LocalDate today = LocalDate.now();
-//            LocalDate onedayLater = today.plusDays(1);
-//            Date expiryAt = Date.from(onedayLater.atStartOfDay(ZoneId.systemDefault()).toInstant());
-//            token.setExpiryAt(expiryAt);
-
-
-
-            System.out.println("Generated Token: " + token.getValue());
-            Token savedToken = tokenRepository.save(token);
-            System.out.println("Saved Token: " + savedToken.getValue());
-            return savedToken;
-
-           // return tokenRepository.save(token);
+            token.setValue(RandomStringUtils.randomAlphabetic(128)); // Kept original logic
+            LocalDate today = LocalDate.now();
+            LocalDate oneDayLater = today.plusDays(1);
+            Date expiryAt = Date.from(oneDayLater.atStartOfDay(ZoneId.systemDefault()).toInstant());
+            token.setExpiryAt(expiryAt);
+            return tokenRepository.save(token);
         }
         return null;
     }
 
-
+    @Override
     public void logout(String token) {
         Optional<Token> tokenOptional = tokenRepository.findByValueAndDeletedEquals(token, false);
-        if (tokenOptional.isEmpty()) {
-            return;
+        if (tokenOptional.isPresent()) {
+            Token t = tokenOptional.get();
+            t.setDeleted(true);
+            tokenRepository.save(t);
         }
-        Token t = tokenOptional.get();
-        t.setDeleted(true);
-        tokenRepository.save(t);
     }
 
+    @Override
     public User validateToken(String token) {
         Optional<Token> tokenOptional = tokenRepository.findByValueAndDeletedEquals(token, false);
         if (tokenOptional.isEmpty()) {
