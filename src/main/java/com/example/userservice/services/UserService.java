@@ -8,13 +8,10 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class UserService implements UserServices {
@@ -61,7 +58,7 @@ public class UserService implements UserServices {
 
     @Override
     public void logout(String token) {
-        Optional<Token> tokenOptional = tokenRepository.findByValueAndDeletedEquals(token, false);
+        Optional<Token> tokenOptional = tokenRepository.findByValueAndDeleted(token, false);
         if (tokenOptional.isPresent()) {
             Token t = tokenOptional.get();
             t.setDeleted(true);
@@ -71,7 +68,7 @@ public class UserService implements UserServices {
 
     @Override
     public User validateToken(String token) {
-        Optional<Token> tokenOptional = tokenRepository.findByValueAndDeletedEquals(token, false);
+        Optional<Token> tokenOptional = tokenRepository.findByValueAndDeleted(token, false);
         if (tokenOptional.isEmpty()) {
             return null;
         }
@@ -81,4 +78,21 @@ public class UserService implements UserServices {
         }
         return t.getUser();
     }
+//
+//    public User validateToken(String token) {
+//    Optional<Token> tokenOptional = tokenRepository.findByValueAndDeleted(token, false);
+//
+//    if (tokenOptional.isEmpty()) {
+//        return null;
+//    }
+//
+//    Token t = tokenOptional.get();
+//    if (t.getExpiryAt().before(new Date())) {
+//        return null;
+//    }
+//
+//    return t.getUser();  // Return User instead of UserDTO
+//}
+
+
 }

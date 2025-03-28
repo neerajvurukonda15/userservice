@@ -8,6 +8,7 @@ import com.example.userservice.models.User;
 import com.example.userservice.models.Token;
 import com.example.userservice.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,12 +24,24 @@ public class UserController {
         this.userService = userService;
     }
 
-    //  Login Endpoint
+//      Login Endpoint
 //    @PostMapping("/login")
 //    public Token login(@RequestBody LoginRequestDto requestDto) {
 //        return userService.login(requestDto.getEmail(), requestDto.getPassword());
 //    }
-    @PostMapping("/login")
+//
+//    @PostMapping("/login")
+//    public ResponseEntity<String> login(@RequestParam String email, @RequestParam String password) {
+//        Token token = userService.login(email, password);
+//        if (token != null) {
+//            return ResponseEntity.ok("Login Successful! Your token: " + token.getValue());
+//        } else {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Credentials");
+//        }
+//    }
+
+
+        @PostMapping("/login")
     public Token login(@RequestBody LoginRequestDto requestDto) {
         // check if email and password in db
         // if yes create token (use random string) return token
@@ -56,6 +69,7 @@ public class UserController {
     //  Validate Token Endpoint
     @PostMapping("/validate/{token}")
     public User validateToken(@PathVariable("token") String token) {
+
         return userService.validateToken(token);
     }
 

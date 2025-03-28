@@ -15,8 +15,10 @@ public class Token extends BaseModel {
     private User user;
 
     @Column(nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date expiryAt;
 
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
     private boolean deleted = false;
 
 

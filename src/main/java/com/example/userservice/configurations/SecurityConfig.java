@@ -21,6 +21,7 @@ public class SecurityConfig {
                         .requestMatchers("/users/login", "/users/signup").permitAll()
                         .requestMatchers("/users/logout").permitAll()
                         .requestMatchers("/users/validate/**").permitAll()
+
                         .anyRequest().authenticated()
                 );
 
