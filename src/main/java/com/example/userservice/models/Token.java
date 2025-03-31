@@ -7,7 +7,7 @@ import java.util.Date;
 @Table(name = "tokens")
 public class Token extends BaseModel {
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true) 
     private String value;
 
     @ManyToOne

@@ -79,19 +79,7 @@ public class UserService implements UserServices {
         return t.getUser();
     }
 //
-//    public User validateToken(String token) {
-//    Optional<Token> tokenOptional = tokenRepository.findByValueAndDeleted(token, false);
 //
-//    if (tokenOptional.isEmpty()) {
-//        return null;
-//    }
-//
-//    Token t = tokenOptional.get();
-//    if (t.getExpiryAt().before(new Date())) {
-//        return null;
-//    }
-//
-//    return t.getUser();  // Return User instead of UserDTO
 //}
 
 

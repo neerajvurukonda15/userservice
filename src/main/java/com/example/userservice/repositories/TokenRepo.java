@@ -10,12 +10,13 @@ import java.util.Optional;
 
 @Repository
 public interface TokenRepo extends JpaRepository<Token, Long> {
-    // ✅ This is the correct method name (Spring Data JPA will generate the query)
-    Optional<Token> findByValueAndDeleted(String value, boolean deleted);
 
-    // ✅ Alternative: Use a JPQL Query if the above method doesn't work
-    @Query("SELECT t FROM Token t WHERE t.value = :value AND t.deleted = false")
-    Optional<Token> findByValueAndDeletedJPQL(@Param("value") String value);
+    Optional<Token> findByValueAndDeleted(String value, boolean deleted);
+    //SELECT * FROM tokens WHERE value = ? AND deleted = ?;
+
+//    // ✅ Alternative: Use a JPQL Query if the above method doesn't work
+//    @Query("SELECT t FROM Token t WHERE t.value = :value AND t.deleted = false")
+//    Optional<Token> findByValueAndDeletedJPQL(@Param("value") String value);
    // Optional<Token> findByValueAndDeletedEquals(String value, boolean isDeleted);
 
 }
